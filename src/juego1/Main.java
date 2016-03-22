@@ -1,17 +1,15 @@
 package juego1;
 
 import comunication.Constantes;
-import oracle.jrockit.jfr.JFR;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import javax.swing.*;
 
-public class Main extends JComponent implements MouseListener{
+public class Main extends JComponent{
 
     private final static int ANCHO = 512;
     private final static int ALTO = 384;
@@ -64,7 +62,7 @@ public class Main extends JComponent implements MouseListener{
     }
 
     public String parce(){
-        return new String("(" + getPocisionX() + "," + getPocisiony() + ")");
+        return new String("a," + getPocisionX() + "," + getPocisiony());
     }
     
     private void dibuja() throws Exception {
@@ -92,7 +90,6 @@ public class Main extends JComponent implements MouseListener{
         jf.setResizable(false);
         Main demo1 = new Main();
         jf.getContentPane().add(demo1);
-        jf.addMouseListener(demo1);
         jf.pack();
         jf.setVisible(true);
         demo1.cicloPrincipalJuego();
@@ -102,7 +99,6 @@ public class Main extends JComponent implements MouseListener{
         DatagramSocket dgSocket;
         DatagramPacket datagram;
         InetAddress destination = null;
-        //String saludo = new String("hola");
         byte msg[] = posiciones.getBytes();
         dgSocket = new DatagramSocket(Constantes.PUERTO_DEL_CLIENTE, InetAddress.getByName(Constantes.HOST_DEL_CLIENTE));
         try {
@@ -111,10 +107,10 @@ public class Main extends JComponent implements MouseListener{
             System.out.println("Host no encontrado: " + uhe);
             System.exit(-1);
         }
-        byte msgR[] = new byte[1024];
         datagram = new DatagramPacket(msg, msg.length, destination, Constantes.PUERTO_DEL_SERVIDOR);
         dgSocket.send(datagram);
         System.out.println("Dato enviado.");
+        byte msgR[] = new byte[1024];
         datagram = new DatagramPacket(msgR, msgR.length);
         dgSocket.receive(datagram);
         String received = new String(datagram.getData());
@@ -126,38 +122,5 @@ public class Main extends JComponent implements MouseListener{
         }
         System.out.println("DATOS DEL DATAGRAMA: " + total);
         dgSocket.close();
-    }
-
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        System.out.println("X: " + e.getX() + " Y: " + e.getY());
-        setPocisionX(e.getX());
-        setPocisiony(e.getY());
-        /*try {
-            test(parce());
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }*/
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
     }
 }
